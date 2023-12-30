@@ -12,8 +12,6 @@ public class AntSmasher : MonoBehaviour
     public float hammerCooldown = 2f;
     private float cooldown;
 
-    private Vector3 clickPos = Vector3.zero;
-
     private void Start()
     {
         cooldown = hammerCooldown;
@@ -29,18 +27,16 @@ public class AntSmasher : MonoBehaviour
 
             if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, clickableLayer))
             {
-                clickPos = hitInfo.point;
+                StartCoroutine(CreateHammer(hitInfo.point));
             }
-
-            StartCoroutine(nameof(CreateHammer));
-
-            cooldown = hammerCooldown;
         }
     }
 
-    private IEnumerator CreateHammer()
+    private IEnumerator CreateHammer(Vector3 position)
     {
-        GameObject newHammer = Instantiate(hammer, clickPos, Quaternion.identity, cake.transform);
+        cooldown = hammerCooldown;
+
+        GameObject newHammer = Instantiate(hammer, position, Quaternion.identity, cake.transform);
         newHammer.transform.LookAt(cakeObj.transform.position);
 
         yield return new WaitForSeconds(3f);

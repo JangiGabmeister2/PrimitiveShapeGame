@@ -1030,6 +1030,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 0
+  walls:
+    serializedVersion: 2
+    m_Bits: 256
+  cake:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!95 &3701236108380387366
 Animator:
   serializedVersion: 5

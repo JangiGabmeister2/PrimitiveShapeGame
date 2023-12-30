@@ -11,13 +11,13 @@ public class BugSpawner : MonoBehaviour
     public float spawnRadius = 50f;
 
     [Space(10)] public int bugsPerFrame;
+    public int bugCount;
     public int maxBugsToSpawn = 30;
     public int maxSpawnIncrease = 20;
 
     [Space(10)] public float newBugSpeed = 10;
 
     private List<GameObject> bugsInGame = new List<GameObject>();
-    private int bugCount;
 
     private void Start()
     {
@@ -31,22 +31,9 @@ public class BugSpawner : MonoBehaviour
             for (int i = 0; i < bugsPerFrame; i++)
             {
                 Vector3 position = GetRandomPosition();
-                bugsInGame.Add(SpawnBug(position)); 
-            }
+                bugsInGame.Add(SpawnBug(position));
 
-            yield return new WaitForSeconds(3f);
-        }
-    }
-
-    private void Update()
-    {
-        foreach (var bug in bugsInGame)
-        {
-            BugBehaviour bugAI = bug.GetComponent<BugBehaviour>();
-
-            if (Vector3.Distance(bug.transform.position - transform.forward, cake.transform.position) <= 5f)
-            {
-                bugAI.moveSpeed = 0;
+                yield return new WaitForSeconds(Random.Range(0f, 0.4f));
             }
         }
     }

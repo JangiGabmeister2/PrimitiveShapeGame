@@ -1,13 +1,15 @@
+using System.Collections;
 using UnityEngine;
 
 public class BugBehaviour : MonoBehaviour
 {
     public float moveSpeed;
     public LayerMask walls;
+    public LayerMask cake;
 
     private bool touchingWall = false;
-
-    private float switchSeconds = 3f;
+    private bool seeCake = false;
+    private bool eatCake = false;
 
     private void Update()
     {
@@ -17,7 +19,23 @@ public class BugBehaviour : MonoBehaviour
 
         if (touchingWall)
         {
-            transform.Rotate(new Vector3(-90, 0, 0));
+            transform.Rotate(Vector3.right * -90);
+        }
+
+        seeCake = Physics.Raycast(transform.position, -transform.up, Mathf.Infinity, cake);
+
+        if (seeCake)
+        {
+            transform.Rotate(Vector3.right * 90);
+
+            moveSpeed = 2f;
+        }
+
+        eatCake = Physics.Raycast(transform.position, transform.forward, 1f, cake);
+
+        if (eatCake)
+        {
+            moveSpeed = 0;
         }
     }
 
