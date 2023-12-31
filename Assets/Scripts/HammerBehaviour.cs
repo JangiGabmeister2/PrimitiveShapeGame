@@ -9,28 +9,25 @@ public class HammerBehaviour : MonoBehaviour
     public Animator animator;
     public UnityEvent hammerSmashed;
 
-
-    private void Awake()
-    {
-        animator.enabled = false;
-    }
+    [SerializeField] List<BugBehaviour> bugs = new List<BugBehaviour>();
 
     private void Start()
     {
-        StartCoroutine(Smash());
-
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
         {
-            List<BugBehaviour> bugs = new List<BugBehaviour>();
             Collider[] bugObjs = Physics.OverlapSphere(hitInfo.point, 5f);
 
             bugs = bugObjs.Select(x => x.GetComponent<BugBehaviour>()).ToList();
 
-            foreach (BugBehaviour bug in bugs)
+            foreach (BugBehaviour bug in bugs)  
             {
-                if (bug == null) return;
+                if (bugs.Count > 0 && bug == null)
+                {
+                    bugs.Remove(bug);
+                    break;
+                }
 
                 bug.moveSpeed = 0;
 
@@ -38,13 +35,6 @@ public class HammerBehaviour : MonoBehaviour
                 hammerSmashed.AddListener(() => bug.Squash());
             }
         }
-    }
-
-    private IEnumerator Smash()
-    {
-        yield return new WaitForSeconds(1f);
-
-        animator.enabled = true;
     }
 
     public void HammerSmash() => hammerSmashed.Invoke();
