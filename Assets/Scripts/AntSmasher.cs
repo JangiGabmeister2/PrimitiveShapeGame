@@ -45,7 +45,7 @@ public class AntSmasher : MonoBehaviour
 
             if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, clickableLayer))
             {
-                StartCoroutine(CreateHammer(hitInfo.point));
+                StartCoroutine(CreateHammer(hitInfo.point + -Vector3.up));
 
                 aoeSphere.transform.position = aoe_originalPos;
             }

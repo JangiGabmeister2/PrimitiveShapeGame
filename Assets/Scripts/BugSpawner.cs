@@ -54,7 +54,7 @@ public class BugSpawner : MonoBehaviour
     {
         bugCount++;
 
-        int i = Random.Range(0, bugs.Length - 1);
+        int i = Random.Range(0, bugs.Length);
 
         GameObject newBug = Instantiate(
             bugs[i], //the type of bug to spawn

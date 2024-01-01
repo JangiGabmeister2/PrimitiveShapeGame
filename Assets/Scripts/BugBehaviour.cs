@@ -11,6 +11,8 @@ public class BugBehaviour : MonoBehaviour
     private bool seeCake = false;
     private bool eatCake = false;
 
+    Rigidbody _rb => GetComponent<Rigidbody>();
+
     private void Update()
     {
         transform.position += transform.forward * moveSpeed * Time.deltaTime;
@@ -26,9 +28,12 @@ public class BugBehaviour : MonoBehaviour
 
         if (seeCake)
         {
+            transform.position += -transform.up * 2;
             transform.Rotate(Vector3.right * 90);
 
             moveSpeed = 2f;
+
+            _rb.useGravity = true;
         }
 
         eatCake = Physics.Raycast(transform.position, transform.forward, 1f, cake);
@@ -39,9 +44,17 @@ public class BugBehaviour : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Hammer"))
+        {
+            Squash();
+        }
+    }
+
     public void Squash()
     {
-        Debug.Log("Bug squashed!");
+        Debug.Log("Bug Squashed!");
 
         Destroy(gameObject);
     }
