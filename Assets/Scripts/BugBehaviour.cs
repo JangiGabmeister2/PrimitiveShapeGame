@@ -14,8 +14,6 @@ public class BugBehaviour : MonoBehaviour
     private bool _seeCake = false;
     private bool _eatCake = false;
 
-    [HideInInspector] public bool smashed = false;
-
     Rigidbody _rb => GetComponent<Rigidbody>();
 
     private void Update()
@@ -53,8 +51,6 @@ public class BugBehaviour : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Hammer"))
         {
-            smashed = true;
-
             StartCoroutine(Squash());
         }
     }
@@ -66,6 +62,16 @@ public class BugBehaviour : MonoBehaviour
         Destroy(antObj);
 
         bloodSplatter.Play();
+
+        Sound[] s = new Sound[3] {
+            SoundMaster.Instance.GetSoundClip("Splat1"),
+            SoundMaster.Instance.GetSoundClip("Splat2"),
+            SoundMaster.Instance.GetSoundClip("Splat3")
+        };
+
+        int i = Random.Range(0, s.Length);
+
+        SoundMaster.Instance.PlaySFX(s[i].clip);
 
         yield return new WaitForSeconds(10);
 
