@@ -3,13 +3,18 @@ using UnityEngine;
 
 public class BugBehaviour : MonoBehaviour
 {
+    public GameObject antObj;
+    public ParticleSystem bloodSplatter;
+
     public float moveSpeed;
     public LayerMask walls;
     public LayerMask cake;
 
-    private bool touchingWall = false;
-    private bool seeCake = false;
-    private bool eatCake = false;
+    private bool _touchingWall = false;
+    private bool _seeCake = false;
+    private bool _eatCake = false;
+
+    [HideInInspector] public bool smashed = false;
 
     Rigidbody _rb => GetComponent<Rigidbody>();
 
@@ -17,16 +22,16 @@ public class BugBehaviour : MonoBehaviour
     {
         transform.position += transform.forward * moveSpeed * Time.deltaTime;
 
-        touchingWall = Physics.Raycast(transform.position, transform.forward, 1f, walls);
+        _touchingWall = Physics.Raycast(transform.position, transform.forward, 1f, walls);
 
-        if (touchingWall)
+        if (_touchingWall)
         {
             transform.Rotate(Vector3.right * -90);
         }
 
-        seeCake = Physics.Raycast(transform.position, -transform.up, Mathf.Infinity, cake);
+        _seeCake = Physics.Raycast(transform.position, -transform.up, Mathf.Infinity, cake);
 
-        if (seeCake)
+        if (_seeCake)
         {
             transform.position += -transform.up * 2;
             transform.Rotate(Vector3.right * 90);
@@ -36,9 +41,9 @@ public class BugBehaviour : MonoBehaviour
             _rb.useGravity = true;
         }
 
-        eatCake = Physics.Raycast(transform.position, transform.forward, 1f, cake);
+        _eatCake = Physics.Raycast(transform.position, transform.forward, 1f, cake);
 
-        if (eatCake)
+        if (_eatCake)
         {
             moveSpeed = 0;
         }
@@ -48,13 +53,21 @@ public class BugBehaviour : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Hammer"))
         {
-            Squash();
+            smashed = true;
+
+            StartCoroutine(Squash());
         }
     }
 
-    public void Squash()
+    public IEnumerator Squash()
     {
-        Debug.Log("Bug Squashed!");
+        ScoreManager.instance.AddScore(10);
+
+        Destroy(antObj);
+
+        bloodSplatter.Play();
+
+        yield return new WaitForSeconds(10);
 
         Destroy(gameObject);
     }

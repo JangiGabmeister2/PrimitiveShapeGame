@@ -3,27 +3,24 @@ using UnityEngine;
 
 public class AntSmasher : MonoBehaviour
 {
-    public GameObject hammer;
-    public GameObject cake;
-    public GameObject cakeObj;
-    public GameObject aoeSphere;
+    public GameObject hammer, cake, cakeObj, aoeSphere;
 
     public LayerMask clickableLayer;
 
     public float hammerCooldown = 2f;
-    private float cooldown;
+    private float _cooldown;
 
     private Vector3 aoe_originalPos;
 
     private void Start()
     {
-        cooldown = hammerCooldown;
+        _cooldown = hammerCooldown;
         aoe_originalPos = aoeSphere.transform.position;
     }
 
     private void Update()
     {
-        cooldown -= Time.deltaTime;
+        _cooldown -= Time.deltaTime;
 
         if (Input.GetMouseButton(0))
         {
@@ -39,7 +36,7 @@ public class AntSmasher : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonUp(0) && cooldown <= 0)
+        if (Input.GetMouseButtonUp(0) && _cooldown <= 0)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -54,7 +51,7 @@ public class AntSmasher : MonoBehaviour
 
     private IEnumerator CreateHammer(Vector3 position)
     {
-        cooldown = hammerCooldown;
+        _cooldown = hammerCooldown;
 
         GameObject newHammer = Instantiate(hammer, position, Quaternion.identity, cake.transform);
         newHammer.transform.LookAt(cakeObj.transform.position);

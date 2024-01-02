@@ -1,32 +1,52 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CakeHealth : MonoBehaviour
 {
+    public Image healthBar, healthBarFill;
     [Range(0f, 1f)] public float health = 1;
+
+    [Space(20)] public float cooldown = 1f;
+    public LayerMask bugLayer;
+
+    private float _cld;
+
+    private void Start()
+    {
+        _cld = cooldown;
+    }
+
+    private void Update()
+    {
+        healthBar.fillAmount = health;
+
+        healthBarFill.color = Color.Lerp(Color.red, Color.green, health);
+    }
 
     public void DecreaseHealth()
     {
-        health -= .01f;
+        health -= .02f;
+
+        ScoreManager.instance.RemoveScore(10);
     }
 
-    public void DecreaseHealth(float decrement)
+    private void OnTriggerEnter(Collider other)
     {
-        health -= decrement;
-    }
+        if (!other.CompareTag("Bug")) return;
 
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.CompareTag("Bug"))
+        Collider[] others = other.GetComponentsInChildren<Collider>();
+
+        if (others.Length > 0)
         {
-            StartCoroutine(nameof(LoseHealth));
+            _cld -= 1;
+
+            if (_cld <= 0)
+            {
+                DecreaseHealth();
+
+                _cld = cooldown;
+            }
         }
-    }
-
-    private IEnumerator LoseHealth()
-    {
-        DecreaseHealth();
-
-        yield return new WaitForSeconds(1f);
     }
 }

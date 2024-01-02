@@ -17,11 +17,26 @@ public class BugSpawner : MonoBehaviour
 
     [Space(10)] public float newBugSpeed = 10;
 
-    private List<GameObject> bugsInGame = new List<GameObject>();
+    private List<GameObject> _bugsInGame = new List<GameObject>();
 
     private void Start()
     {
         StartCoroutine(nameof(Spawn));
+    }
+
+    private void Update()
+    {
+        foreach (var bug in _bugsInGame)
+        {
+            if (bug != null)
+            {
+                if (Vector3.Distance(bug.transform.position, gameArea.transform.position) > spawnRadius + 1)
+                {
+                    _bugsInGame.Remove(bug);
+                    Destroy(bug.gameObject);
+                }
+            }
+        }
     }
 
     private IEnumerator Spawn()
@@ -31,7 +46,7 @@ public class BugSpawner : MonoBehaviour
             for (int i = 0; i < bugsPerFrame; i++)
             {
                 Vector3 position = GetRandomPosition();
-                bugsInGame.Add(SpawnBug(position));
+                _bugsInGame.Add(SpawnBug(position));
 
                 yield return new WaitForSeconds(Random.Range(0f, 0.4f));
             }
