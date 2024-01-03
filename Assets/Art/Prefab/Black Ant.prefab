@@ -91,7 +91,6 @@ MonoBehaviour:
   cake:
     serializedVersion: 2
     m_Bits: 128
-  smashed: 0
 --- !u!136 &1059086574386770581
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -3953,7 +3952,7 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 471
+      m_Bits: 470
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5

@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BugSpawner : MonoBehaviour
 {
     public GameObject cake;
+    public Text waveText;
 
     [Space(10)] public GameObject[] bugs;
     public GameObject gameArea;
@@ -13,13 +15,15 @@ public class BugSpawner : MonoBehaviour
     [Space(10)] public int bugsPerFrame;
     public int bugCount;
     public int maxBugsToSpawn = 30;
-    public int maxSpawnIncrease = 20;
+    public int maxSpawnIncrease = 50;
+    public int maxSpawnRateIncrease = 10;
 
     [Space(10)] public float newBugSpeed = 10;
 
+    private int wave = 1;
     private List<GameObject> _bugsInGame = new List<GameObject>();
 
-    private void Start()
+    private void OnEnable()
     {
         StartCoroutine(nameof(Spawn));
     }
@@ -30,7 +34,9 @@ public class BugSpawner : MonoBehaviour
         {
             if (bug != null)
             {
-                if (Vector3.Distance(bug.transform.position, gameArea.transform.position) > spawnRadius + 1)
+                if (Vector3.Distance(bug.transform.position, gameArea.transform.position) > spawnRadius + 1
+                    || GameHandler.instance.CurrentState == GameStates.Menu
+                    || GameHandler.instance.CurrentState == GameStates.End)
                 {
                     _bugsInGame.Remove(bug);
                     Destroy(bug.gameObject);
@@ -41,16 +47,45 @@ public class BugSpawner : MonoBehaviour
 
     private IEnumerator Spawn()
     {
-        while (bugCount < maxBugsToSpawn)
+        if (GameHandler.instance.CurrentState == GameStates.Game)
         {
-            for (int i = 0; i < bugsPerFrame; i++)
+            while (bugCount < maxBugsToSpawn)
             {
-                Vector3 position = GetRandomPosition();
-                _bugsInGame.Add(SpawnBug(position));
+                waveText.text = $"Wave {wave}";
 
-                yield return new WaitForSeconds(Random.Range(0f, 0.4f));
+                for (int i = 0; i < bugsPerFrame; i++)
+                {
+                    Vector3 position = GetRandomPosition();
+                    _bugsInGame.Add(SpawnBug(position));
+
+                    yield return new WaitForSeconds(Random.Range(0f, 0.4f));
+                }
+
+                if (bugCount >= maxBugsToSpawn)
+                {
+                    while (bugCount > 5)
+                    {
+                    }
+
+                    waveText.text = "Intermission";
+                    maxBugsToSpawn += maxSpawnIncrease;
+                    bugsPerFrame += maxSpawnRateIncrease;
+                    bugCount = 0;
+
+                    yield return new WaitForSeconds(30f);
+
+                    wave++;
+                }
             }
         }
+
+        if (GameHandler.instance.CurrentState == GameStates.End)
+        {
+            wave = 1;
+            bugCount = 0;
+        }
+
+        yield return null;
     }
 
     private Vector3 GetRandomPosition()

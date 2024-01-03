@@ -20,10 +20,10 @@ public class AntSmasher : MonoBehaviour
 
     private void Update()
     {
-        _cooldown -= Time.deltaTime;
-
-        if (Input.GetMouseButton(0))
+        if (GameHandler.instance.CurrentState == GameStates.Game
+            || GameHandler.instance.CurrentState == GameStates.Intermission)
         {
+            _cooldown -= Time.deltaTime;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, clickableLayer))
@@ -36,7 +36,7 @@ public class AntSmasher : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonUp(0) && _cooldown <= 0)
+        if (Input.GetMouseButtonDown(0) && _cooldown <= 0)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -48,6 +48,7 @@ public class AntSmasher : MonoBehaviour
             }
         }
     }
+
 
     private IEnumerator CreateHammer(Vector3 position)
     {

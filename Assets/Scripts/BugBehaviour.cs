@@ -63,10 +63,9 @@ public class BugBehaviour : MonoBehaviour
 
         bloodSplatter.Play();
 
-        Sound[] s = new Sound[3] {
+        Sound[] s = new Sound[] {
             SoundMaster.Instance.GetSoundClip("Splat1"),
-            SoundMaster.Instance.GetSoundClip("Splat2"),
-            SoundMaster.Instance.GetSoundClip("Splat3")
+            SoundMaster.Instance.GetSoundClip("Splat2")
         };
 
         int i = Random.Range(0, s.Length);
